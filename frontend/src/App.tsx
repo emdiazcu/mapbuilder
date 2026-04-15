@@ -5,6 +5,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import DashboardPage from './pages/DashboardPage'
+import MyMapsPage from './pages/MyMapsPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,6 +29,15 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/maps"
+              element={
+                <ProtectedRoute>
+                  <MyMapsPage />
                 </ProtectedRoute>
               }
             />
