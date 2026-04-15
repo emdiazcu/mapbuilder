@@ -42,23 +42,21 @@ class ScheduleController extends Controller
     }
 
     /**
-     * GET /api/spaces/{space}/schedules/{schedule}
+     * GET /api/schedules/{schedule}  (shallow)
      */
-    public function show(Space $space, Schedule $schedule): JsonResponse
+    public function show(Schedule $schedule): JsonResponse
     {
-        Gate::authorize('view', $space->building);
-        abort_if($schedule->space_id !== $space->id, 404);
+        Gate::authorize('view', $schedule->space->building);
 
         return response()->json(new ScheduleResource($schedule));
     }
 
     /**
-     * PUT/PATCH /api/spaces/{space}/schedules/{schedule}
+     * PUT/PATCH /api/schedules/{schedule}  (shallow)
      */
-    public function update(UpdateScheduleRequest $request, Space $space, Schedule $schedule): JsonResponse
+    public function update(UpdateScheduleRequest $request, Schedule $schedule): JsonResponse
     {
-        Gate::authorize('update', $space->building);
-        abort_if($schedule->space_id !== $space->id, 404);
+        Gate::authorize('update', $schedule->space->building);
 
         $schedule->update($request->validated());
 
@@ -66,12 +64,11 @@ class ScheduleController extends Controller
     }
 
     /**
-     * DELETE /api/spaces/{space}/schedules/{schedule}
+     * DELETE /api/schedules/{schedule}  (shallow)
      */
-    public function destroy(Space $space, Schedule $schedule): JsonResponse
+    public function destroy(Schedule $schedule): JsonResponse
     {
-        Gate::authorize('delete', $space->building);
-        abort_if($schedule->space_id !== $space->id, 404);
+        Gate::authorize('delete', $schedule->space->building);
 
         $schedule->delete();
 

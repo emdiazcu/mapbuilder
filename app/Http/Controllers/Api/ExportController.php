@@ -33,16 +33,18 @@ class ExportController extends Controller
      */
     public function qrCode(Building $building): Response
     {
+        Gate::authorize('view', $building);
+
         $url = url('/map/' . $building->public_token);
 
-        $qr = QrCode::format('png')
+        $qr = QrCode::format('svg')
             ->size(300)
             ->margin(1)
             ->generate($url);
 
         return response($qr, 200, [
-            'Content-Type'        => 'image/png',
-            'Content-Disposition' => 'inline; filename="qr-' . $building->public_token . '.png"',
+            'Content-Type'        => 'image/svg+xml',
+            'Content-Disposition' => 'inline; filename="qr-' . $building->public_token . '.svg"',
         ]);
     }
 }

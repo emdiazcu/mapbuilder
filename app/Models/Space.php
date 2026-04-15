@@ -40,9 +40,11 @@ class Space extends Model
 
     public function scopeSearch($query, string $term)
     {
-        return $query->where(function ($q) use ($term) {
-            $q->where('name', 'ilike', "%{$term}%")
-              ->orWhere('type', 'ilike', "%{$term}%");
+        $lower = strtolower($term);
+
+        return $query->where(function ($q) use ($lower) {
+            $q->whereRaw('LOWER(name) LIKE ?', ["%{$lower}%"])
+              ->orWhereRaw('LOWER(type) LIKE ?', ["%{$lower}%"]);
         });
     }
 

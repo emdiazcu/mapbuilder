@@ -46,12 +46,11 @@ class SpaceController extends Controller
     }
 
     /**
-     * GET /api/buildings/{building}/spaces/{space}
+     * GET /api/spaces/{space}  (shallow)
      */
-    public function show(Building $building, Space $space): JsonResponse
+    public function show(Space $space): JsonResponse
     {
-        Gate::authorize('view', $building);
-        abort_if($space->building_id !== $building->id, 404);
+        Gate::authorize('view', $space->building);
 
         $space->load('schedules');
 
@@ -59,12 +58,11 @@ class SpaceController extends Controller
     }
 
     /**
-     * PUT/PATCH /api/buildings/{building}/spaces/{space}
+     * PUT/PATCH /api/spaces/{space}  (shallow)
      */
-    public function update(UpdateSpaceRequest $request, Building $building, Space $space): JsonResponse
+    public function update(UpdateSpaceRequest $request, Space $space): JsonResponse
     {
-        Gate::authorize('update', $building);
-        abort_if($space->building_id !== $building->id, 404);
+        Gate::authorize('update', $space->building);
 
         $space->update($request->validated());
 
@@ -72,12 +70,11 @@ class SpaceController extends Controller
     }
 
     /**
-     * DELETE /api/buildings/{building}/spaces/{space}
+     * DELETE /api/spaces/{space}  (shallow)
      */
-    public function destroy(Building $building, Space $space): JsonResponse
+    public function destroy(Space $space): JsonResponse
     {
-        Gate::authorize('delete', $building);
-        abort_if($space->building_id !== $building->id, 404);
+        Gate::authorize('delete', $space->building);
 
         $space->delete();
 
