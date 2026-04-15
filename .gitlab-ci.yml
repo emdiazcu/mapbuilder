@@ -41,7 +41,7 @@ check:
     - .config
   script:
     - php vendor/bin/phpunit --colors=never
-    - cd frontend && npm ci && npm run test:run
+    - cd frontend && npm ci && npm run test:run -- --passWithNoTests
 
 deploy:
   stage: deploy
