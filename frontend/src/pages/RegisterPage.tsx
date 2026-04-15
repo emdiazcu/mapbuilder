@@ -1,12 +1,12 @@
 import { useState, type FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import AuthCard from '../components/auth/AuthCard'
 import { useAuth } from '../contexts/AuthContext'
 import type { ApiError } from '../types'
 
 export default function RegisterPage() {
-  const { register } = useAuth()
-  const navigate      = useNavigate()
+  const { register, isAuthenticated, isLoading } = useAuth()
+  const navigate = useNavigate()
 
   const [name,                 setName]                 = useState('')
   const [email,                setEmail]                = useState('')
@@ -28,7 +28,7 @@ export default function RegisterPage() {
     setLoading(true)
     try {
       await register({ name, email, password, password_confirmation: passwordConfirmation })
-      navigate('/dashboard')
+      navigate('/dashboard', { replace: true })
     } catch (err: unknown) {
       const apiErr = (err as { response?: { data?: ApiError } }).response?.data
       if (apiErr?.errors) {
@@ -41,6 +41,10 @@ export default function RegisterPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  if (!isLoading && isAuthenticated) {
+    return <Navigate to="/dashboard" replace />
   }
 
   return (
