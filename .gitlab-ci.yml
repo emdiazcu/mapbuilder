@@ -15,10 +15,14 @@ stages:
   - deploy
 
 .config:
-  image: edbizarro/gitlab-ci-pipeline-php:8.2
+  image: php:8.3-cli
   services:
     - postgres:14
   before_script:
+    - apt-get update -qq && apt-get install -y -qq git curl unzip libpq-dev
+    - docker-php-ext-install pdo pdo_pgsql
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    - curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt-get install -y nodejs
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress
     - cp .env.example .env
     - php artisan key:generate
