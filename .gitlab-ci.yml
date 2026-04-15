@@ -15,7 +15,7 @@ stages:
   - deploy
 
 .config:
-  image: php:8.3-cli
+  image: php:8.4-cli
   services:
     - postgres:14
   before_script:
