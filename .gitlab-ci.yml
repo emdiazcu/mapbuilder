@@ -40,7 +40,7 @@ check:
   extends:
     - .config
   script:
-    - php vendor/bin/phpunit --coverage-text --colors=never
+    - php vendor/bin/phpunit --colors=never
     - cd frontend && npm ci && npm run test:run
 
 deploy:
