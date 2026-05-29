@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\DashboardController;
+use App\Http\Controllers\Web\MapEditorController;
+use App\Http\Controllers\Web\PublicMapController;
 use App\Http\Controllers\Api\ExportController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,12 +21,21 @@ Route::middleware('guest')->group(function () {
     Route::post('/register',[AuthController::class, 'register']);
 });
 
+// ── Público (sin auth) ────────────────────────────────────────
+Route::get('/map/{token}', [PublicMapController::class, 'show'])->name('web.map.public');
+
 // ── Autenticado ───────────────────────────────────────────────
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard',           [DashboardController::class, 'index'])->name('web.dashboard');
-    Route::get('/maps',                [DashboardController::class, 'maps'])->name('web.maps');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('web.dashboard');
+    Route::get('/maps',      [DashboardController::class, 'maps'])->name('web.maps');
 
-    // Exportar Excel desde la vista Blade (reutiliza el mismo controlador API)
+    // Editor de mapas
+    Route::get('/editor',                    [MapEditorController::class, 'create'])->name('web.editor.create');
+    Route::post('/editor',                   [MapEditorController::class, 'store'])->name('web.editor.store');
+    Route::get('/editor/{building}',         [MapEditorController::class, 'edit'])->name('web.editor.edit');
+    Route::put('/editor/{building}',         [MapEditorController::class, 'update'])->name('web.editor.update');
+
+    // Exportar Excel (reutiliza controlador API)
     Route::get('/buildings/{building}/export', [ExportController::class, 'exportExcel'])
         ->name('buildings.export');
 });

@@ -19,13 +19,15 @@ class Building extends Model
         'type',
         'latitude',
         'longitude',
+        'is_favorite',
         'floor_plan_image',
         'public_token',
     ];
 
     protected $casts = [
-        'latitude'  => 'float',
-        'longitude' => 'float',
+        'latitude'    => 'float',
+        'longitude'   => 'float',
+        'is_favorite' => 'boolean',
     ];
 
     protected static function booted(): void

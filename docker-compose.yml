@@ -1,0 +1,48 @@
+services:
+
+  # ── PHP-FPM (Laravel backend) ────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: .env.docker
+    volumes:
+      - storage_data:/var/www/html/storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ── Nginx (React SPA + API proxy) ────────────────────────────────────────
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8080}:80"
+    volumes:
+      - storage_data:/var/www/html/storage:ro
+    depends_on:
+      - app
+
+  # ── PostgreSQL ────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    env_file: .env.docker
+    environment:
+      POSTGRES_DB:       mapbuilder_db
+      POSTGRES_USER:     mapbuilder
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mapbuilder -d mapbuilder_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  storage_data:
+  postgres_data:

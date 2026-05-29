@@ -51,12 +51,14 @@
                 </svg>
                 Mis Mapas
             </a>
-            <button class="flex h-12 items-center gap-3 rounded-lg px-4 text-base text-gray-700 hover:bg-gray-50">
+            <a href="{{ route('web.editor.create') }}"
+               class="flex h-12 items-center gap-3 rounded-lg px-4 text-base transition-colors
+                      {{ request()->routeIs('web.editor.*') ? 'bg-blue-50 font-medium text-blue-600' : 'text-gray-700 hover:bg-gray-50' }}">
                 <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M12 4v16m8-8H4"/>
                 </svg>
                 Crear Mapa
-            </button>
+            </a>
             <button class="flex h-12 items-center gap-3 rounded-lg px-4 text-base text-gray-700 hover:bg-gray-50">
                 <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"

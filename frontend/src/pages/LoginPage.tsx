@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import AuthCard from '../components/auth/AuthCard'
 import { useAuth } from '../contexts/AuthContext'
@@ -14,11 +14,10 @@ export default function LoginPage() {
   const [errors,   setErrors]   = useState<Record<string, string>>({})
   const [loading,  setLoading]  = useState(false)
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: { preventDefault(): void }) => {
     e.preventDefault()
     setErrors({})
     setLoading(true)
-
     try {
       await login({ email, password })
       navigate('/dashboard', { replace: true })
@@ -40,19 +39,24 @@ export default function LoginPage() {
     return <Navigate to="/dashboard" replace />
   }
 
+  const fieldClass = (field: string) =>
+    `h-11 w-full rounded-lg border px-4 text-base text-gray-900 placeholder:text-gray-400 outline-none transition focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 ${
+      errors[field] ? 'border-red-400' : 'border-gray-300'
+    }`
+
   return (
     <AuthCard title="Iniciar Sesión" subtitle="Ingresa a tu cuenta">
-      <form onSubmit={handleSubmit} noValidate className="space-y-6">
+      <form onSubmit={handleSubmit} noValidate className="space-y-5">
 
         {errors.general && (
-          <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+          <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
             {errors.general}
           </p>
         )}
 
         {/* Correo */}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-[#364153] mb-2">
+          <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-gray-700">
             Correo Electrónico
           </label>
           <input
@@ -62,16 +66,14 @@ export default function LoginPage() {
             placeholder="correo@ejemplo.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className={`w-full h-[46px] rounded-lg border px-4 py-[10px] text-base text-gray-900 placeholder:text-gray-400 outline-none transition focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] ${
-              errors.email ? 'border-red-400' : 'border-[#D1D5DC]'
-            }`}
+            className={fieldClass('email')}
           />
           {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email}</p>}
         </div>
 
         {/* Contraseña */}
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-[#364153] mb-2">
+          <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-gray-700">
             Contraseña
           </label>
           <input
@@ -81,47 +83,46 @@ export default function LoginPage() {
             placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className={`w-full h-[46px] rounded-lg border px-4 py-[10px] text-base text-gray-900 placeholder:text-gray-400 outline-none transition focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] ${
-              errors.password ? 'border-red-400' : 'border-[#D1D5DC]'
-            }`}
+            className={fieldClass('password')}
           />
           {errors.password && <p className="mt-1 text-xs text-red-600">{errors.password}</p>}
         </div>
 
         {/* Recuérdame + olvidé contraseña */}
         <div className="flex items-center justify-between">
-          <label className="flex items-center gap-2 text-base font-medium text-[#4A5565] cursor-pointer select-none">
+          <label className="flex cursor-pointer select-none items-center gap-2 text-sm text-gray-600">
             <input
               type="checkbox"
               checked={remember}
               onChange={(e) => setRemember(e.target.checked)}
-              className="w-4 h-4 rounded border-[#D1D5DC] text-[#2563EB] focus:ring-[#2563EB]"
+              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
             />
             Recordarme
           </label>
-          <a href="#" className="text-sm text-[#2563EB] hover:underline">
+          <a href="#" className="text-sm text-blue-600 hover:underline">
             ¿Olvidaste tu contraseña?
           </a>
         </div>
 
         {/* Botón */}
-        <div className="pt-8">
+        <div className="pt-2">
           <button
             type="submit"
             disabled={loading}
-            className="w-full h-10 bg-[#2563EB] hover:bg-blue-700 disabled:opacity-60 text-white text-base font-medium rounded-lg shadow-sm transition"
+            className="h-10 w-full rounded-lg bg-blue-600 text-base font-medium text-white shadow-sm transition hover:bg-blue-700 disabled:opacity-60"
           >
             {loading ? 'Iniciando sesión…' : 'Iniciar Sesión'}
           </button>
         </div>
 
         {/* Link a registro */}
-        <p className="text-center text-sm text-[#4A5565] mt-8">
+        <p className="pt-2 text-center text-sm text-gray-500">
           ¿No tienes cuenta?{' '}
-          <Link to="/register" className="text-sm font-medium text-[#2563EB] hover:underline">
+          <Link to="/register" className="font-medium text-blue-600 hover:underline">
             Regístrate aquí
           </Link>
         </p>
+
       </form>
     </AuthCard>
   )

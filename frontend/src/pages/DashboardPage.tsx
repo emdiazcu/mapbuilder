@@ -1,5 +1,6 @@
 import { Building2, Clock, Eye, MapPin } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import DashboardLayout from '../layouts/DashboardLayout'
 import { buildingsApi } from '../api/buildings'
@@ -17,25 +18,26 @@ function firstName(fullName: string | undefined) {
 }
 
 function StatCard({
-  label, value, sub, icon: Icon, iconBgClass, iconClass,
+  label, value, sub, subClass = 'text-green-600', icon: Icon, iconBg, iconColor,
 }: {
   label: string
   value: string
   sub: string
+  subClass?: string
   icon: typeof MapPin
-  iconBgClass: string
-  iconClass: string
+  iconBg: string
+  iconColor: string
 }) {
   return (
-    <div className="rounded-lg border border-[#E5E7EB] bg-white p-6 shadow-sm shadow-black/5">
+    <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
       <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0 space-y-1">
-          <p className="text-sm font-normal text-[#6A7282]">{label}</p>
-          <p className="text-3xl font-bold leading-9 text-[#101828]">{value}</p>
-          <p className="text-sm font-normal text-[#00A63E]">{sub}</p>
+        <div className="space-y-1">
+          <p className="text-sm text-gray-500">{label}</p>
+          <p className="text-3xl font-bold text-gray-900">{value}</p>
+          <p className={`text-sm ${subClass}`}>{sub}</p>
         </div>
-        <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-lg ${iconBgClass}`}>
-          <Icon className={`h-6 w-6 ${iconClass}`} strokeWidth={2} />
+        <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-lg ${iconBg}`}>
+          <Icon className={`h-6 w-6 ${iconColor}`} strokeWidth={2} />
         </div>
       </div>
     </div>
@@ -44,7 +46,7 @@ function StatCard({
 
 function StatusPill({ type }: { type: string }) {
   return (
-    <span className="inline-flex rounded-full bg-[#DBEAFE] px-2.5 py-0.5 text-xs font-medium text-[#1D4ED8]">
+    <span className="inline-flex rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-700">
       {TYPE_LABELS[type] ?? type}
     </span>
   )
@@ -71,69 +73,78 @@ export default function DashboardPage() {
       <main className="p-8">
         <div className="mx-auto max-w-6xl space-y-8">
 
+          {/* Encabezado */}
           <div>
-            <h1 className="text-3xl font-bold leading-9 text-[#101828]">Dashboard</h1>
-            <p className="mt-2 text-base font-normal text-[#6A7282]">
+            <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+            <p className="mt-2 text-base text-gray-500">
               Bienvenido de nuevo, {welcome}
             </p>
           </div>
 
+          {/* Stats */}
           <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
             <StatCard
               label="Total Edificios"
               value={isLoading ? '…' : String(total)}
               sub="en tu cuenta"
               icon={MapPin}
-              iconBgClass="bg-[#DBEAFE]"
-              iconClass="text-[#155DFC]"
+              iconBg="bg-blue-100"
+              iconColor="text-blue-600"
             />
             <StatCard
               label="Esta Página"
               value={isLoading ? '…' : String(buildings.length)}
               sub="mostrados ahora"
               icon={Building2}
-              iconBgClass="bg-[#DCFCE7]"
-              iconClass="text-[#00A63E]"
+              iconBg="bg-green-100"
+              iconColor="text-green-600"
             />
             <StatCard
               label="Vistas Públicas"
               value="—"
               sub="próximamente"
+              subClass="text-gray-400"
               icon={Eye}
-              iconBgClass="bg-[#F3E8FF]"
-              iconClass="text-[#9810FA]"
+              iconBg="bg-purple-100"
+              iconColor="text-purple-600"
             />
-            <div className="rounded-lg border border-[#E5E7EB] bg-white p-6 shadow-sm shadow-black/5">
+            <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
               <div className="flex items-start justify-between gap-4">
-                <div className="min-w-0 space-y-1">
-                  <p className="text-sm font-normal text-[#6A7282]">Última Actividad</p>
-                  <p className="text-3xl font-bold leading-9 text-[#101828]">
+                <div className="space-y-1">
+                  <p className="text-sm text-gray-500">Última Actividad</p>
+                  <p className="text-3xl font-bold text-gray-900">
                     {isLoading ? '…' : lastUpdated}
                   </p>
+                  <p className="text-sm text-gray-400">
+                    {buildings[0]
+                      ? new Date(buildings[0].updated_at).toLocaleDateString('es-MX', { day: '2-digit', month: 'short' })
+                      : 'Sin actividad'}
+                  </p>
                 </div>
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#FFEDD4]">
-                  <Clock className="h-6 w-6 text-[#F54900]" strokeWidth={2} />
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-orange-100">
+                  <Clock className="h-6 w-6 text-orange-500" strokeWidth={2} />
                 </div>
               </div>
             </div>
           </div>
 
-          <section className="rounded-lg border border-[#E5E7EB] bg-white p-6 shadow-sm shadow-black/5">
-            <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-              <h2 className="text-xl font-bold leading-7 text-[#101828]">Edificios Recientes</h2>
-              <a href="/maps" className="text-sm font-normal text-[#2563EB] hover:underline">
+          {/* Tabla edificios recientes */}
+          <section className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-xl font-bold text-gray-900">Edificios Recientes</h2>
+              <Link to="/maps" className="text-sm text-blue-600 hover:underline">
                 Ver todos
-              </a>
+              </Link>
             </div>
 
             {isLoading && (
               <div className="flex justify-center py-8">
-                <div className="h-7 w-7 animate-spin rounded-full border-4 border-[#2563EB] border-t-transparent" />
+                <div className="h-7 w-7 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
               </div>
             )}
 
             {!isLoading && buildings.length === 0 && (
-              <p className="py-4 text-center text-sm text-[#6A7282]">
+              <p className="py-4 text-center text-sm text-gray-400">
                 No hay edificios aún. ¡Crea el primero!
               </p>
             )}
@@ -142,20 +153,22 @@ export default function DashboardPage() {
               <div className="-mx-6 overflow-x-auto">
                 <table className="w-full min-w-[640px] text-left text-sm">
                   <thead>
-                    <tr className="border-b border-[#E5E7EB]">
+                    <tr className="border-b border-gray-200">
                       {['Nombre', 'Tipo', 'Espacios', 'Actualizado'].map((h) => (
-                        <th key={h} className="px-6 py-3 text-sm font-medium text-[#364153]">{h}</th>
+                        <th key={h} className="px-6 py-3 font-medium text-gray-700">{h}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {buildings.slice(0, 5).map((b) => (
-                      <tr key={b.id} className="border-b border-[#F3F4F6] last:border-0">
-                        <td className="px-6 py-4 text-base font-medium text-[#101828]">{b.name}</td>
+                      <tr key={b.id} className="border-b border-gray-100 last:border-0 hover:bg-gray-50">
+                        <td className="px-6 py-4 font-medium text-gray-900">{b.name}</td>
                         <td className="px-6 py-4"><StatusPill type={b.type} /></td>
-                        <td className="px-6 py-4 text-base text-[#4A5565]">{b.spaces_count ?? 0}</td>
-                        <td className="px-6 py-4 text-sm text-[#4A5565]">
-                          {new Date(b.updated_at).toLocaleDateString('es-MX')}
+                        <td className="px-6 py-4 text-gray-600">{b.spaces_count ?? 0}</td>
+                        <td className="px-6 py-4 text-gray-400">
+                          {new Date(b.updated_at).toLocaleDateString('es-MX', {
+                            day: '2-digit', month: 'short', year: 'numeric',
+                          })}
                         </td>
                       </tr>
                     ))}

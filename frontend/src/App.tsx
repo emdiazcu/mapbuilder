@@ -6,6 +6,11 @@ import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import DashboardPage from './pages/DashboardPage'
 import MyMapsPage from './pages/MyMapsPage'
+import MapEditorPage from './pages/MapEditorPage'
+import PublicMapPage from './pages/PublicMapPage'
+import ReportsPage from './pages/ReportsPage'
+import SettingsPage from './pages/SettingsPage'
+import ExportPage from './pages/ExportPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,6 +46,53 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+
+            <Route
+              path="/editor"
+              element={
+                <ProtectedRoute>
+                  <MapEditorPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/editor/:id"
+              element={
+                <ProtectedRoute>
+                  <MapEditorPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/reports"
+              element={
+                <ProtectedRoute>
+                  <ReportsPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <SettingsPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/export"
+              element={
+                <ProtectedRoute>
+                  <ExportPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Mapa público — sin autenticación */}
+            <Route path="/map/:token" element={<PublicMapPage />} />
 
             {/* Raíz → dashboard */}
             <Route path="/" element={<Navigate to="/dashboard" replace />} />

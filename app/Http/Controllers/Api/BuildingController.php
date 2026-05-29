@@ -94,6 +94,18 @@ class BuildingController extends Controller
     }
 
     /**
+     * POST /api/buildings/{building}/favorite
+     */
+    public function toggleFavorite(Building $building): JsonResponse
+    {
+        Gate::authorize('update', $building);
+
+        $building->update(['is_favorite' => !$building->is_favorite]);
+
+        return response()->json(new BuildingResource($building));
+    }
+
+    /**
      * DELETE /api/buildings/{building}
      */
     public function destroy(Building $building): JsonResponse

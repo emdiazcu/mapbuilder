@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BuildingController;
+use App\Http\Controllers\Api\DatabaseViewController;
 use App\Http\Controllers\Api\ExportController;
 use App\Http\Controllers\Api\PublicMapController;
 use App\Http\Controllers\Api\ScheduleController;
@@ -41,6 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Buildings CRUD + búsqueda paginada
     Route::apiResource('buildings', BuildingController::class);
+    Route::post('buildings/{building}/favorite', [BuildingController::class, 'toggleFavorite']);
 
     // Export y QR (anidados bajo buildings)
     Route::get('buildings/{building}/export', [ExportController::class, 'exportExcel']);
@@ -53,4 +55,18 @@ Route::middleware('auth:sanctum')->group(function () {
     // Schedules anidados bajo spaces
     Route::apiResource('spaces.schedules', ScheduleController::class)
         ->shallow();
+
+    // ── Vistas de base de datos (read-only) ───────────────────────────────
+    Route::prefix('views')->group(function () {
+        Route::get('buildings',   [DatabaseViewController::class, 'buildingsSummary']);
+        Route::get('spaces',      [DatabaseViewController::class, 'spacesOverview']);
+        Route::get('user-stats',  [DatabaseViewController::class, 'userStatistics']);
+    });
+
+    // ── Stored procedures / funciones ─────────────────────────────────────
+    Route::prefix('procedures')->group(function () {
+        Route::get('building-stats/{id}',  [DatabaseViewController::class, 'buildingStats']);
+        Route::get('open-spaces',          [DatabaseViewController::class, 'openSpaces']);
+        Route::post('transfer-building',   [DatabaseViewController::class, 'transferBuilding']);
+    });
 });

@@ -16,6 +16,7 @@ export interface Building {
   type: 'school' | 'commercial' | 'office' | 'dependency'
   latitude: number | null
   longitude: number | null
+  is_favorite: boolean
   floor_plan_image: string | null
   public_token: string
   public_url: string

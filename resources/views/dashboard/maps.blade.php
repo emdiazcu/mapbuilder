@@ -116,13 +116,13 @@
                         </p>
 
                         <div class="mt-4 flex gap-2">
-                            <a href="{{ $building->public_url ?? '#' }}" target="_blank"
+                            <a href="{{ route('web.map.public', $building->public_token) }}"
                                class="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-50">
                                 Ver Mapa
                             </a>
-                            <a href="{{ route('buildings.export', $building) }}"
+                            <a href="{{ route('web.editor.edit', $building) }}"
                                class="flex-1 rounded-lg bg-blue-600 px-3 py-2 text-center text-sm font-medium text-white hover:bg-blue-700">
-                                Exportar
+                                Editar
                             </a>
                         </div>
                     </div>

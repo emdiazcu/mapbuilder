@@ -17,6 +17,7 @@ class BuildingResource extends JsonResource
             'type'             => $this->type,
             'latitude'         => $this->latitude,
             'longitude'        => $this->longitude,
+            'is_favorite'      => (bool) $this->is_favorite,
             'floor_plan_image' => $this->floor_plan_image
                 ? asset('storage/' . $this->floor_plan_image)
                 : null,
