@@ -35,6 +35,11 @@ mkdir -p storage/framework/{views,cache/data,sessions} \
 chown -R www-data:www-data storage bootstrap/cache
 chmod -R 777 storage
 
+# Ajustar puerto de nginx al PORT que asigna Railway (default 80)
+NGINX_PORT=${PORT:-80}
+sed -i "s/listen 80 default_server/listen ${NGINX_PORT} default_server/" /etc/nginx/http.d/default.conf
+echo "==> nginx escuchará en puerto ${NGINX_PORT}"
+
 # Validar configuración de nginx
 nginx -t 2>&1 || { echo "ERROR: nginx config inválida"; exit 1; }
 
