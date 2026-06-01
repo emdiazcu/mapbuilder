@@ -26,12 +26,17 @@ if [ -z "$APP_KEY" ]; then
     exit 1
 fi
 
-# Crear directorios de storage
+# Crear directorios necesarios
 mkdir -p storage/framework/{views,cache/data,sessions} \
          storage/logs \
-         storage/app/public
+         storage/app/public \
+         /var/log/nginx \
+         /var/lib/nginx/tmp
 chown -R www-data:www-data storage bootstrap/cache
 chmod -R 777 storage
+
+# Validar configuración de nginx
+nginx -t 2>&1 || { echo "ERROR: nginx config inválida"; exit 1; }
 
 # Esperar a la base de datos
 echo "==> Esperando base de datos..."
