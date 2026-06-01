@@ -19,11 +19,10 @@ RUN apk add --no-cache \
     libzip-dev \
     libxml2-dev \
     oniguruma-dev \
-    icu-dev \
     zip \
     unzip \
     && docker-php-ext-install \
-       pdo pdo_pgsql pgsql gd zip bcmath mbstring xml intl opcache
+       pdo pdo_pgsql pgsql gd zip bcmath mbstring xml opcache
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
