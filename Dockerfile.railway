@@ -44,7 +44,9 @@ COPY docker/railway/entrypoint.sh   /entrypoint.sh
 RUN chmod +x /entrypoint.sh \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache \
-    && mkdir -p /run/nginx
+    && mkdir -p /run/nginx /var/log/nginx /var/lib/nginx/tmp \
+    && sed -i 's|error_log.*|error_log /dev/stderr warn;|' /etc/nginx/nginx.conf \
+    && sed -i 's|access_log.*|access_log /dev/stdout;|' /etc/nginx/nginx.conf
 
 EXPOSE 80
 
